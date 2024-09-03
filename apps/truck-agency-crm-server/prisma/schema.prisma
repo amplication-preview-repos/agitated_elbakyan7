@@ -1,0 +1,78 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Driver {
+  address       String?
+  createdAt     DateTime @default(now())
+  id            String   @id @default(cuid())
+  licenseNumber String?
+  name          String?
+  phoneNumber   String?
+  trips         Trip[]
+  updatedAt     DateTime @updatedAt
+}
+
+model Truck {
+  createdAt           DateTime  @default(now())
+  id                  String    @id @default(cuid())
+  lastServiceDate     DateTime?
+  make                String?
+  model               String?
+  nextServiceReminder DateTime?
+  permitExpiryDate    DateTime?
+  trips               Trip[]
+  updatedAt           DateTime  @updatedAt
+  vin                 String?
+  year                Int?
+}
+
+model Expense {
+  amount      Float?
+  createdAt   DateTime  @default(now())
+  date        DateTime?
+  description String?
+  id          String    @id @default(cuid())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Income {
+  amount      Float?
+  createdAt   DateTime  @default(now())
+  date        DateTime?
+  description String?
+  id          String    @id @default(cuid())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Trip {
+  createdAt   DateTime  @default(now())
+  destination String?
+  driver      Driver?   @relation(fields: [driverId], references: [id])
+  driverId    String?
+  endDate     DateTime?
+  fare        Float?
+  id          String    @id @default(cuid())
+  petrolCost  Float?
+  startDate   DateTime?
+  truck       Truck?    @relation(fields: [truckId], references: [id])
+  truckId     String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
